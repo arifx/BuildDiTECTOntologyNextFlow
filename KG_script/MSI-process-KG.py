@@ -109,4 +109,4 @@ for col_index, column in enumerate(df.columns[1:]): # get column name
   elif "TVC" in column:
     g.add((URIRef(fsmon+column), RDF.type, URIRef(om2+"ViableCount")))
  
-g.serialize(destination=output_path+str(dataset_name.replace(" ","_"))+"_KG.owl", format='xml')
+g.serialize(destination=output_path+"KG_"+str(dataset_name.replace(" ","_"))+".owl", format='xml')

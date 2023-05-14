@@ -16,10 +16,7 @@ if "xlsx" in input_path:
 else:
   df = pd.read_csv(input_path)
 
-cols = df.columns
-new_cols = [column.replace(" ", "_") for column in df.columns]
-rename_cols = dict(zip(cols, new_cols))
-df.rename(columns=rename_cols, inplace=True)
+df.rename(columns={df.columns[0]: "Sample_ID"}, inplace=True)
 
 saref = Namespace('https://saref.etsi.org/core/')
 fsmon = Namespace('https://purl.archive.org/purl/fsmon/Ontology#')
@@ -86,9 +83,7 @@ for index, row in df[["Sample_ID"]].iterrows(): #iter rows of first column, get 
       time = feature[1]
       package_type = feature[2]
       aId = feature[3]
-      batch_n = feature[4]
       g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasTemperature"), Literal(temperature)))
-      g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasBatchNumber"), Literal(batch_n)))
       g.add((URIRef(fsmon+sample), URIRef(fsmon+"time"), Literal(time)))
       g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasAdditionalID"), Literal(aId)))
     g.add((URIRef(fsmon+sample), URIRef(saref+"hasProperty"), URIRef(om2+"Wavelength")))
@@ -106,4 +101,4 @@ if df.columns[1:][-1] == "TVC":
 else:
     g.add((URIRef(fsmon+"wavelength-"+str(df.columns[1:][-1])), RDF.type, URIRef(om2+"Wavelength")))
 
-g.serialize(destination=output_path+str(dataset_name.replace(" ","_"))+"_KG.owl", format='xml')
+g.serialize(destination=output_path+"KG_"+str(dataset_name.replace(" ","_"))+".owl", format='xml')

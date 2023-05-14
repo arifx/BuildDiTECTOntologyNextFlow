@@ -16,10 +16,7 @@ if "xlsx" in input_path:
 else:
   df = pd.read_csv(input_path)
 
-cols = df.columns
-new_cols = [column.replace(" ", "_") for column in df.columns]
-rename_cols = dict(zip(cols, new_cols))
-df.rename(columns=rename_cols, inplace=True)
+df.rename(columns={df.columns[0]: "Sample_ID"}, inplace=True)
 
 saref = Namespace('https://saref.etsi.org/core/')
 fsmon = Namespace('https://purl.archive.org/purl/fsmon/Ontology#')
@@ -107,4 +104,4 @@ else:
     g.add((URIRef(fsmon+"wavelength-"+str(df.columns[1:][-1])), RDF.type, URIRef(om2+"Wavelength")))
     
 
-g.serialize(destination=output_path+str(dataset_name.replace(" ","_"))+"_KG.owl", format='xml')
+g.serialize(destination=output_path+"KG_"+str(dataset_name.replace(" ","_"))+".owl", format='xml')
