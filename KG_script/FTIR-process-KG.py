@@ -39,7 +39,7 @@ g.bind("om2", om2)
 g.bind("fsmon", fsmon)
 g.bind("sio", sio)
 g.bind("sosa", sosa)
-g.bind("foodon", obo)
+g.bind("obo", obo)
 
 tmp = dataset_name.split("_")
 tmp =dataset_name.replace(tmp[0]+"_", "")
@@ -48,7 +48,7 @@ if "csv"in tmp:
 elif "xlsx" in tmp:
     sample_name= tmp.replace(".xlsx", "")
 format_ = dataset_name.split(".")[-1]
-sensor=dataset_name.split("_")[0]
+sensor="FTIR"
 
 g.add((URIRef(fsmon+dataset_name.replace(" ","_")), RDF.type, URIRef(sio+"SIO_000089")))
 g.add((URIRef(fsmon+dataset_name.replace(" ","_")), URIRef(fsmon+"name"), Literal(str(dataset_name))))
@@ -91,13 +91,20 @@ for index, row in df[["Sample_ID"]].iterrows(): #iter rows of first column, get 
       g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasBatchNumber"), Literal(batch_n)))
       g.add((URIRef(fsmon+sample), URIRef(fsmon+"time"), Literal(time)))
       g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasAdditionalID"), Literal(aId)))
-    g.add((URIRef(fsmon+sample), URIRef(saref+"hasProperty"), URIRef(om2+"Wavelength"))) #example: 0C_0h_air_a_b1 hasProperty Mean
+    g.add((URIRef(fsmon+sample), URIRef(saref+"hasProperty"), URIRef(om2+"Wavelength")))
+    if "TVC" in dataset_name.replace(" ","_"):
+       g.add((URIRef(fsmon+sample), URIRef(saref+"hasProperty"), URIRef(om2+"ViableCount")))
 
 g.add((URIRef(obo+"CHMO_0000801"), URIRef(saref+"isMeasuredByDevice"), URIRef(fsmon+"FTIR-6200"))) #Absorbance is measured by Jasco
 g.add((URIRef(fsmon+"FTIR-6200"), URIRef(fsmon+"hasSensorType"), URIRef(fsmon+sensor)))
 g.add((URIRef(om2+"Wavelength"), URIRef(saref+"relatesToMeasurement"), URIRef(obo+"CHMO_0000801"))) #Wavelength relatedToMeasurement Absorbance
 g.add((URIRef(obo+"CHMO_0000801"), URIRef(saref+"relatesToProperty"), URIRef(om2+"Wavelength"))) #Absorbance relatesToProperty Wavelength 
-g.add((URIRef(fsmon+"wavelength-"+str(df.columns[1:][0])), RDF.type, URIRef(om2+"Wavelength"))) #example: wavelength-399.1927 is wavelength 
-g.add((URIRef(fsmon+"wavelength-"+str(df.columns[1:][-1])), RDF.type, URIRef(om2+"Wavelength"))) 
+g.add((URIRef(fsmon+"wavelength-"+str(df.columns[1:][0])), RDF.type, URIRef(om2+"Wavelength"))) #example: wavelength-399.1927 is wavelength
+if df.columns[1:][-1] == "TVC":
+    g.add((URIRef(fsmon+str(df.columns[1:][-1])), RDF.type, URIRef(om2+"ViableCount")))
+    g.add((URIRef(fsmon+"wavelength-"+str(df.columns[1:][-2])), RDF.type, URIRef(om2+"Wavelength")))
+else:
+    g.add((URIRef(fsmon+"wavelength-"+str(df.columns[1:][-1])), RDF.type, URIRef(om2+"Wavelength")))
+    
 
 g.serialize(destination=output_path+str(dataset_name.replace(" ","_"))+"_KG.owl", format='xml')

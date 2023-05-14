@@ -48,7 +48,7 @@ if "csv"in tmp:
 elif "xlsx" in tmp:
     sample_name= tmp.replace(".xlsx", "")
 format_ = dataset_name.split(".")[-1]
-sensor="MSI"
+sensor="Freshdetect"
 
 g.add((URIRef(fsmon+dataset_name.replace(" ","_")), RDF.type, URIRef(sio+"SIO_000089")))
 g.add((URIRef(fsmon+dataset_name.replace(" ","_")), URIRef(fsmon+"name"), Literal(str(dataset_name))))
@@ -56,12 +56,6 @@ g.add((URIRef(fsmon+dataset_name.replace(" ","_")), URIRef(sio+"SIO_000061"), UR
 g.add((URIRef(fsmon+file_uri), RDF.type, URIRef(obo+"NCIT_C42778")))
 g.add((URIRef(fsmon+file_uri), URIRef(fsmon+"name"), Literal(str(file_uri))))
 g.add((URIRef(fsmon+dataset_name.replace(" ","_")), URIRef(fsmon+"has_format"), Literal(format_))) 
-g.add((URIRef(obo+"CHMO_0000937"), URIRef(saref+"isMeasuredByDevice"), URIRef(fsmon+"Videometer"))) #Reflectance
-g.add((URIRef(sio+"SIO_001109"), URIRef(saref+"relatesToMeasurement"), URIRef(obo+"CHMO_0000937"))) #Mean relatedToMeasurement Reflectance
-g.add((URIRef(sio+"SIO_000770"), URIRef(saref+"relatesToMeasurement"), URIRef(obo+"CHMO_0000937"))) #Std relatedToMeasurement Reflectance
-g.add((URIRef(obo+"CHMO_0000937"), URIRef(saref+"relatesToProperty"), URIRef(sio+"SIO_001109"))) #Reflectance relatesToProperty Mean 
-g.add((URIRef(obo+"CHMO_0000937"), URIRef(saref+"relatesToProperty"), URIRef(sio+"SIO_000770"))) #Reflectance relatedToMeasurement Std
-g.add((URIRef(fsmon+"Videometer"), URIRef(fsmon+"hasSensorType"), URIRef(fsmon+sensor)))
 g.add((URIRef(fsmon+"PoultryAnalysis-1"), RDF.type, URIRef(obo+"NCIT_C42790"))) #experiment
 g.add((URIRef(fsmon+"PoultryAnalysis-1"), URIRef(fsmon+"has_date"), Literal("22/8/2022"))) 
 g.add((URIRef(fsmon+"MicroLab-ML1"), RDF.type, URIRef(obo+"ENVO_01001406"))) #Laboratory
@@ -84,7 +78,7 @@ for index, row in df[["Sample_ID"]].iterrows(): #iter rows of first column, get 
     g.add((URIRef(fsmon+sample), URIRef(fsmon+"Sample_code_number"), Literal("PA-1-00011")))  #example: 0C_0h_air_a_b1 is type of Sample
     g.add((URIRef(fsmon+sample), URIRef(fsmon+"name"), Literal(sample_name))) 
     g.add((URIRef(obo+"NCIT_C42790"), URIRef(fsmon+"isPerformedOn"), URIRef(fsmon+sample)))    
-    g.add((URIRef(fsmon+sample), URIRef(saref+"hasMeasurement"), URIRef(obo+"CHMO_0000937"))) 
+    g.add((URIRef(fsmon+sample), URIRef(saref+"hasMeasurement"), URIRef(obo+"CHMO_0000801"))) #Absorbance
     g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasSampleId"), Literal(str(sample))))
     if "Adulteration" not in file_uri:
       feature = sample.split("_")
@@ -97,16 +91,19 @@ for index, row in df[["Sample_ID"]].iterrows(): #iter rows of first column, get 
       g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasBatchNumber"), Literal(batch_n)))
       g.add((URIRef(fsmon+sample), URIRef(fsmon+"time"), Literal(time)))
       g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasAdditionalID"), Literal(aId)))
-    g.add((URIRef(fsmon+sample), URIRef(saref+"hasProperty"), URIRef(sio+"SIO_001109"))) #example: 0C_0h_air_a_b1 hasProperty Mean
-    g.add((URIRef(fsmon+sample), URIRef(saref+"hasProperty"), URIRef(sio+"SIO_000770"))) #example: 0C_0h_air_a_b1 hasProperty StandardDeviation
+    g.add((URIRef(fsmon+sample), URIRef(saref+"hasProperty"), URIRef(om2+"Wavelength")))
     if "TVC" in dataset_name.replace(" ","_"):
        g.add((URIRef(fsmon+sample), URIRef(saref+"hasProperty"), URIRef(om2+"ViableCount")))
-for col_index, column in enumerate(df.columns[1:]): # get column name
-  if "Mean" in column:
-    g.add((URIRef(fsmon+column), RDF.type, URIRef(sio+"SIO_001109"))) #Mean_01 a Mean
-  elif "StdDev" in column:
-    g.add((URIRef(fsmon+column), RDF.type, URIRef(sio+"SIO_000770"))) #Std_01 a Standard Deviation
-  elif "TVC" in column:
-    g.add((URIRef(fsmon+column), RDF.type, URIRef(om2+"ViableCount")))
- 
+
+g.add((URIRef(obo+"CHMO_0000801"), URIRef(saref+"isMeasuredByDevice"), URIRef(fsmon+"FreshDetectBFD-100"))) #Absorbance is measured by Jasco
+g.add((URIRef(fsmon+"FreshDetectBFD-100"), URIRef(fsmon+"hasSensorType"), URIRef(fsmon+sensor)))
+g.add((URIRef(om2+"Wavelength"), URIRef(saref+"relatesToMeasurement"), URIRef(obo+"CHMO_0000801"))) #Wavelength relatedToMeasurement Absorbance
+g.add((URIRef(obo+"CHMO_0000801"), URIRef(saref+"relatesToProperty"), URIRef(om2+"Wavelength"))) #Absorbance relatesToProperty Wavelength 
+g.add((URIRef(fsmon+"wavelength-"+str(df.columns[1:][0])), RDF.type, URIRef(om2+"Wavelength"))) #example: wavelength-399.1927 is wavelength 
+if df.columns[1:][-1] == "TVC":
+    g.add((URIRef(fsmon+str(df.columns[1:][-1])), RDF.type, URIRef(om2+"ViableCount")))
+    g.add((URIRef(fsmon+"wavelength-"+str(df.columns[1:][-2])), RDF.type, URIRef(om2+"Wavelength")))
+else:
+    g.add((URIRef(fsmon+"wavelength-"+str(df.columns[1:][-1])), RDF.type, URIRef(om2+"Wavelength")))
+
 g.serialize(destination=output_path+str(dataset_name.replace(" ","_"))+"_KG.owl", format='xml')

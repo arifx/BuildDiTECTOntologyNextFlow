@@ -39,13 +39,13 @@ process mergeKG {
   
   script:
   """
-    MSI_input_files=""
+    input_files=""
     find "$runKG_output_folder" -type f | while read -r file; do
       if [[ "\$file" == *"MSIF"* ]]&& [[ "\$file" != *"MSI"* ]]; then  
-        MSI_input_files+=" \"\$file\" "
+        input_files+=" \"\$file\" "
       fi
     done
-    python3 $merge_script_file --input \$MSI_input_files "${main_kg}" --output "${merge_output_path}"
+    python3 $merge_script_file --input \$input_files "${main_kg}" --output "${merge_output_path}"
   """
 }
 
