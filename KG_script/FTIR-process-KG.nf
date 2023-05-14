@@ -21,7 +21,7 @@ process runKGProcess {
       echo 'script executing...'
       echo \$(pwd)
       find "$input_folder" -type f | while read -r file; do
-        if [[ "\$file" == *"MSI"* ]]&& [[ "\$file" != *"MSIF"* ]]; then
+        if [[ "\$file" == *"FTIR"* ]]; then
           python3 $scriptFile --input "\$file" --output "${runKG_output_folder}"
         fi
       done
@@ -41,7 +41,7 @@ process mergeKG {
   """
     MSI_input_files=""
     find "$runKG_output_folder" -type f | while read -r file; do
-      if [[ "\$file" == *"MSI"* ]]&& [[ "\$file" != *"MSIF"* ]]; then  
+      if [[ "\$file" == *"FTIR"* ]]; then  
         MSI_input_files+=" \"\$file\" "
       fi
     done
@@ -64,7 +64,7 @@ process copyFile {
 
 workflow {
   data = input_folder
-  script_file = "$script_dir/MSI-process-KG.py"
+  script_file = "$script_dir/FTIR-process-KG.py"
   merge_script_file = "$script_dir/Merge-KG.py"
   runKGProcess(data, script_file) 
   mergeResult = mergeKG(merge_script_file, main_kg)

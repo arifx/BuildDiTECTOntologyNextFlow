@@ -41,7 +41,7 @@ process mergeKG {
   """
     MSI_input_files=""
     find "$runKG_output_folder" -type f | while read -r file; do
-      if [[ "\$file" == *"MSI"* ]]; then  
+      if [[ "\$file" == *"MSIF"* ]]&& [[ "\$file" != *"MSI"* ]]; then  
         MSI_input_files+=" \"\$file\" "
       fi
     done
@@ -64,7 +64,7 @@ process copyFile {
 
 workflow {
   data = input_folder
-  script_file = "$script_dir/MSI-process-KG.py"
+  script_file = "$script_dir/MSIF-process-KG.py"
   merge_script_file = "$script_dir/Merge-KG.py"
   runKGProcess(data, script_file) 
   mergeResult = mergeKG(merge_script_file, main_kg)
