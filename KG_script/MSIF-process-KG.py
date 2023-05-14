@@ -78,13 +78,13 @@ else:
 
 for index, row in df[["Sample_ID"]].iterrows(): #iter rows of first column, get sampleId
     sample = row['Sample_ID']
+    feature = sample.split("_")
     g.add((URIRef(fsmon+sample), RDF.type, URIRef(sosa+"Sample")))  #example: 0C_0h_air_a_b1 is type of Sample
     g.add((URIRef(fsmon+dataset_name.replace(" ","_")), URIRef(fsmon+"hasSample"), URIRef(fsmon+sample)))  #example: dataset_name hasSample 0C_0h_air_a_b1
     g.add((URIRef(fsmon+sample), RDF.type, URIRef(sosa+"Sample")))  #example: 0C_0h_air_a_b1 is type of Sample
     g.add((URIRef(fsmon+sample), URIRef(fsmon+"Sample_code_number"), Literal("PA-1-00011")))  #example: 0C_0h_air_a_b1 is type of Sample
     g.add((URIRef(fsmon+sample), URIRef(fsmon+"name"), Literal(sample_name))) 
-    g.add((URIRef(obo+"NCIT_C42790"), URIRef(fsmon+"isPerformedOn"), URIRef(fsmon+sample)))    
-    g.add((URIRef(fsmon+sample), URIRef(saref+"hasMeasurement"), URIRef(obo+"CHMO_0000937"))) 
+    g.add((URIRef(obo+"NCIT_C42790"), URIRef(fsmon+"isPerformedOn"), URIRef(fsmon+sample)))
     g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasSampleId"), Literal(str(sample))))
     if "Adulteration" not in file_uri:
       feature = sample.split("_")
@@ -96,7 +96,8 @@ for index, row in df[["Sample_ID"]].iterrows(): #iter rows of first column, get 
       g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasTemperature"), Literal(temperature)))
       g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasBatchNumber"), Literal(batch_n)))
       g.add((URIRef(fsmon+sample), URIRef(fsmon+"time"), Literal(time)))
-      g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasAdditionalID"), Literal(aId)))
+      g.add((URIRef(fsmon+sample), URIRef(fsmon+"hasAdditionalID"), Literal(aId)))    
+    g.add((URIRef(fsmon+sample), URIRef(saref+"hasMeasurement"), URIRef(obo+"CHMO_0000937"))) 
     g.add((URIRef(fsmon+sample), URIRef(saref+"hasProperty"), URIRef(sio+"SIO_001109"))) #example: 0C_0h_air_a_b1 hasProperty Mean
     g.add((URIRef(fsmon+sample), URIRef(saref+"hasProperty"), URIRef(sio+"SIO_000770"))) #example: 0C_0h_air_a_b1 hasProperty StandardDeviation
     for col_index, column in enumerate(df.columns[1:]): # get column name
