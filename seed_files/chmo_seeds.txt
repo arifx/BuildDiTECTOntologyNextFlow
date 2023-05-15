@@ -1,0 +1,3 @@
+http://purl.obolibrary.org/obo/CHMO_0001000
+http://purl.obolibrary.org/obo/CHMO_0000937
+http://purl.obolibrary.org/obo/CHMO_0000801

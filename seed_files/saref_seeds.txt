@@ -1,0 +1,14 @@
+https://saref.etsi.org/core/hasMeasurement
+https://saref.etsi.org/core/hasProperty
+https://saref.etsi.org/core/isPropertyOf
+https://saref.etsi.org/core/measuresProperty
+https://saref.etsi.org/core/relatesToMeasurement
+https://saref.etsi.org/core/isControlledByDevice
+https://saref.etsi.org/core/isMeasuredByDevice
+https://saref.etsi.org/core/isMeasuredIn
+https://saref.etsi.org/core/isMeasurementOf
+https://saref.etsi.org/core/makesMeasurement
+https://saref.etsi.org/core/relatesToProperty
+https://saref.etsi.org/core/hasValue
+https://saref.etsi.org/core/UnitOfMeasure
+https://saref.etsi.org/core/Measurement

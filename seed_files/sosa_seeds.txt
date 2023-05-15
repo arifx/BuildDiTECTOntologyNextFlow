@@ -1,0 +1,8 @@
+http://www.w3.org/ns/sosa/FeatureOfInterest
+http://www.w3.org/ns/sosa/Result
+http://www.w3.org/ns/sosa/Sample
+http://www.w3.org/ns/sosa/Sensor
+http://www.w3.org/ns/sosa/isResultOf
+http://www.w3.org/ns/sosa/hasResult
+http://www.w3.org/ns/sosa/hasSample
+http://www.w3.org/ns/sosa/isSampleOf
