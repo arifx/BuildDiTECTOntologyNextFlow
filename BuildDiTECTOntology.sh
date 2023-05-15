@@ -1,7 +1,7 @@
-ROOT_FOLDER="/content/drive/MyDrive/23_FoodSafety"
+#ROOT_FOLDER="BuildDiTECTOntologyNextFlow"
 java --version
-#change working directory 
-cd $ROOT_FOLDER
+# #change working directory 
+#cd $ROOT_FOLDER
 pwd
 mkdir robot_jar/
 curl -L https://github.com/ontodev/robot/releases/download/v1.9.3/robot.jar > ./robot_jar/robot.jar
@@ -36,13 +36,13 @@ java -jar ./robot_jar/robot.jar -v extract --method MIREOT --input ./ontology-so
 java -jar ./robot_jar/robot.jar -v extract --method MIREOT --input ./ontology-sources/ncit.owl   --lower-terms ./seed_files/ncit_seeds.txt  \ --intermediates none --copy-ontology-annotations true --output ./imports/ditect-fso-ncit-import.owl > ./imports/ncitimport.log
 java -jar ./robot_jar/robot.jar -v extract --method MIREOT --input ./ontology-sources/obi.owl   --lower-terms ./seed_files/obi_seeds.txt  \ --intermediates none --copy-ontology-annotations true --output ./imports/ditect-fso-obi-import.owl > ./imports/obiimport.log
 java -jar ./robot_jar/robot.jar -v extract --method MIREOT --input ./ontology-sources/saref.ttl   --lower-terms ./seed_files/saref_seeds.txt \  --intermediates none --copy-ontology-annotations true --output ./imports/ditect-fso-saref-import.owl > ./imports/sarefimport.log
-
-java -jar ./robot_jar/robot.jar -vvv template --template ditect-template.csv \
+pwd
+java -jar ./robot_jar/robot.jar -vvv template --template ./ditect-template.csv \
     --prefix "fsmon: https://purl.org/fsmon/Ontology#" \
     --ontology-iri "https://purl.org/ditect/fsmon/ditect-fso-custom.owl" \
     --errors ./templates/error.csv \
     --output ./templates/ditect-fso-custom.owl
-    
+mkdir merge/    
 java -jar ./robot_jar/robot.jar -v merge \
     --input ./templates/ditect-fso-custom.owl \
     --input ./imports/ditect-fso-foodon-import.owl \
@@ -60,7 +60,7 @@ java -jar ./robot_jar/robot.jar -v merge \
     --input ./imports/ditect-fso-saref-import.owl \
     --include-annotations false \
     --output ./merge/ditect-fso.owl > ./merge/fso-merge.log
-    
+mkdir reasoner/     
 java -jar ./robot_jar/robot.jar -v reason --reasoner ELK \
   --input ./merge/ditect-fso.owl \
   --output ./reasoner/ditect-fso-satisfiable.owl
