@@ -35,6 +35,7 @@ java -jar ./robot_jar/robot.jar -v extract --method MIREOT --input ./ontology-so
 java -jar ./robot_jar/robot.jar -v extract --method MIREOT --input ./ontology-sources/ncit.owl   --lower-terms ./seed_files/ncit_seeds.txt  --intermediates none --copy-ontology-annotations true --output ./imports/ditect-fso-ncit-import.owl > ./imports/ncitimport.log
 java -jar ./robot_jar/robot.jar -v extract --method MIREOT --input ./ontology-sources/obi.owl   --lower-terms ./seed_files/obi_seeds.txt  --intermediates none --copy-ontology-annotations true --output ./imports/ditect-fso-obi-import.owl > ./imports/obiimport.log
 java -jar ./robot_jar/robot.jar -v extract --method MIREOT --input ./ontology-sources/saref.ttl   --lower-terms ./seed_files/saref_seeds.txt  --intermediates none --copy-ontology-annotations true --output ./imports/ditect-fso-saref-import.owl > ./imports/sarefimport.log
+mkdir templates/
 java -jar ./robot_jar/robot.jar -vvv template --template ./ditect-template.csv \
     --prefix "fsmon: https://purl.org/fsmon/Ontology#" \
     --ontology-iri "https://purl.org/ditect/fsmon/ditect-fso-custom.owl" \
